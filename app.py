@@ -1,4 +1,6 @@
+#flask
 from flask import Flask, render_template, request
+import joblib
 
 app = Flask(__name__)
 
@@ -15,6 +17,13 @@ def main():
 def dbs():
     r = request.form.get("q")
     return(render_template("dbs.html"))
+
+@app.route("/DbsPrediction", methods=["GET","POST"])
+def DbsPrediction():
+    q = float(request.form.get("q"))
+    model = joblib.load("dbs.jl")
+    r = model.predict([[q]])
+    return(render_template("DbsPrediction.html",r=r[0][0]))
 
 if __name__ == "__main__":
     app.run()
